@@ -1,0 +1,2 @@
+from rust
+COPY . /app
