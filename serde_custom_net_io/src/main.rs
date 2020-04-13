@@ -4,7 +4,7 @@ use log::info;
 use serde::de::{self, MapAccess, Visitor};
 use serde::ser::SerializeStruct;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use serde_test::{Token, assert_de_tokens};
+use serde_test::{assert_de_tokens, Token};
 use std::fmt;
 
 #[derive(Debug, PartialEq)]
@@ -134,13 +134,21 @@ fn test_ser_de() {
         max_pods: 10,
     };
 
-    assert_de_tokens(&kubeconfig, &[
-        Token::Struct{ name: "KubeConfig", len: 3},
-        Token::Str("port"), Token::U8(80),
-        Token::Str("healthz_port"), Token::U8(90),
-        Token::Str("max_pods"), Token::U8(10),
-        Token::StructEnd,
-    ]
+    assert_de_tokens(
+        &kubeconfig,
+        &[
+            Token::Struct {
+                name: "KubeConfig",
+                len: 3,
+            },
+            Token::Str("port"),
+            Token::U8(80),
+            Token::Str("healthz_port"),
+            Token::U8(90),
+            Token::Str("max_pods"),
+            Token::U8(10),
+            Token::StructEnd,
+        ],
     );
 }
 
