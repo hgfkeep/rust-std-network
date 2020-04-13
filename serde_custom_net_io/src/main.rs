@@ -1,7 +1,6 @@
-#[macro_use]
-extern crate log;
 extern crate env_logger;
-use log::{debug, info};
+extern crate log;
+use log::info;
 use serde::de::{self, MapAccess, Visitor};
 
 use serde::ser::SerializeStruct;
@@ -60,9 +59,9 @@ impl<'de> Deserialize<'de> for KubeConfig {
                     {
                         match value {
                             "port" => Ok(Field::Port),
-                            "healthz_port" => Ok((Field::HealthzPort)),
+                            "healthz_port" => Ok(Field::HealthzPort),
                             "max_pods" => Ok(Field::MaxPods),
-                            _ => Err(de::Error::unknown_field(value, FIELDS))
+                            _ => Err(de::Error::unknown_field(value, FIELDS)),
                         }
                     }
                 }
@@ -122,13 +121,22 @@ impl<'de> Deserialize<'de> for KubeConfig {
             }
         }
 
-        const FIELDS:&'static [&'static str] = &["port","healthz_port", "max_pods"];
-        deserializer.deserialize_identifier(KubeConfigVisitor)
+        const FIELDS: &'static [&'static str] = &["port", "healthz_port", "max_pods"];
+        deserializer.deserialize_struct("KubeConfig", FIELDS, KubeConfigVisitor)
     }
 }
 
 fn main() {
     env_logger::init();
-    
+    let kubeconfig = KubeConfig {
+        port: 80,
+        healthz_port: 90,
+        max_pods: 10,
+    };
 
+    let serialized = serde_json::to_string(&kubeconfig).expect("serialize error");
+    info!("serialized: {}", serialized);
+
+    let config: KubeConfig = serde_json::from_str(&serialized.as_str()).expect("deserialize error");
+    info!("deserialized: {:?}", config);
 }
