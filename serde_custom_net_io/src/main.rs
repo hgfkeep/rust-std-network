@@ -2,9 +2,9 @@ extern crate env_logger;
 extern crate log;
 use log::info;
 use serde::de::{self, MapAccess, Visitor};
-
 use serde::ser::SerializeStruct;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde_test::{Token, assert_de_tokens};
 use std::fmt;
 
 #[derive(Debug, PartialEq)]
@@ -124,6 +124,24 @@ impl<'de> Deserialize<'de> for KubeConfig {
         const FIELDS: &'static [&'static str] = &["port", "healthz_port", "max_pods"];
         deserializer.deserialize_struct("KubeConfig", FIELDS, KubeConfigVisitor)
     }
+}
+
+#[test]
+fn test_ser_de() {
+    let kubeconfig = KubeConfig {
+        port: 80,
+        healthz_port: 90,
+        max_pods: 10,
+    };
+
+    assert_de_tokens(&kubeconfig, &[
+        Token::Struct{ name: "KubeConfig", len: 3},
+        Token::Str("port"), Token::U8(80),
+        Token::Str("healthz_port"), Token::U8(90),
+        Token::Str("max_pods"), Token::U8(10),
+        Token::StructEnd,
+    ]
+    );
 }
 
 fn main() {
