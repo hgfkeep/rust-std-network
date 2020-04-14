@@ -6,7 +6,8 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [workspace]
-members = ["echo", "echo-client", "udp-echo", "udp-echo-client", "boardcast", "ipaddr", "simple_dns", "nslookup", "serde", "serde_net_io", "serde_custom_net_io"]
+members = ["echo", "echo-client", "udp-echo", "udp-echo-client", "boardcast", "ipaddr", "simple_dns", "nslookup", 
+"serde", "serde_net_io", "serde_custom_net_io", "parse_str"]
 
 [[bin]]
 name = "echo-server"
@@ -52,6 +53,10 @@ path = "serde_net_io/src/main.rs"
 name = "serde_custom_net_io"
 path = "serde_custom_net_io/src/main.rs"
 
+[[bin]]
+name = "parse_str"
+path = "parse_str/src/main.rs"
+
 [dependencies]
 dns-lookup = "1.0.1"
 serde = "1.0.106"
@@ -62,3 +67,4 @@ serde_test = "1.0.106"
 clap = "2.33.0"
 env_logger = "0.7.1"
 log = "0.4.8" 
+nom = "5.1.1"
